@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>VSGMC R&A Rules Quiz 3</title>
+<style>
+body{margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;background:#f0f2f0;color:#222}
+header{background:#1a5c2a;color:white;padding:16px 20px;text-align:center}
+header h1{margin:0 0 4px;font-size:20px;font-weight:700;line-height:1.3}
+header .sub{font-size:12px;opacity:0.85}
+.badge{display:inline-block;background:#c9a84c;color:#111;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 10px;border-radius:20px;margin-bottom:8px}
+.container{max-width:860px;margin:0 auto;padding:16px 12px 60px}
+#start-screen{background:white;border-radius:10px;padding:28px 22px;text-align:center;max-width:560px;margin:28px auto}
+#start-screen h2{color:#1a5c2a;margin:0 0 6px;font-size:20px}
+.start-sub{color:#2563a8;font-style:italic;margin-bottom:14px;font-size:14px}
+#start-screen p{color:#555;font-size:14px;line-height:1.6;margin-bottom:18px}
+.info-row{display:table;width:100%;margin-bottom:22px}
+.info-box{display:inline-block;background:#f5f5f5;border-radius:8px;padding:10px 14px;margin:4px;min-width:80px;text-align:center}
+.info-box strong{display:block;font-size:20px;color:#1a4f8a}
+.info-box span{font-size:11px;color:#2563a8;font-style:italic}
+.info-box em{display:block;font-size:12px;color:#555;font-style:normal}
+.go-btn{background:#1a5c2a;color:white;border:none;border-radius:25px;padding:13px 30px;font-size:16px;font-weight:700;cursor:pointer;font-family:Arial,Helvetica,sans-serif;display:inline-block}
+.go-btn .pt{display:block;font-size:11px;font-style:italic;opacity:0.85;margin-top:2px;font-weight:400}
+.footer{text-align:center;padding:14px 0 4px;font-size:11px;color:#aaa}
+#quiz-screen{display:none}
+#results-screen{display:none;text-align:center;padding:28px 16px}
+.cat-bar{margin-bottom:14px}
+.cat-btn{cursor:pointer;border-radius:20px;padding:6px 12px;font-size:12px;font-weight:700;background:white;color:#555;border:2px solid #ddd;margin:3px;font-family:Arial,Helvetica,sans-serif}
+.cat-btn.active{background:#1a5c2a;color:white;border-color:#1a5c2a}
+.score-bar{background:white;border-radius:10px;padding:10px 16px;margin-bottom:14px;display:table;width:100%;box-sizing:border-box}
+.score-bar-inner{display:table-row}
+.score-lbl{display:table-cell;font-size:12px;color:#555;white-space:nowrap;vertical-align:middle;padding-right:10px}
+.score-track-cell{display:table-cell;width:100%;vertical-align:middle}
+.score-track{height:10px;background:#ddd;border-radius:5px;overflow:hidden}
+.score-fill{height:10px;width:0;background:#2e7d42;border-radius:5px}
+.score-num{display:table-cell;font-size:13px;font-weight:700;color:#1a5c2a;white-space:nowrap;vertical-align:middle;padding-left:10px}
+.q-card{background:white;border-radius:10px;padding:15px 16px 13px;margin-bottom:12px;border-left:4px solid #ddd}
+.q-card.correct-card{border-left-color:#2e7d42}
+.q-card.wrong-card{border-left-color:#8b1a1a}
+.q-meta{margin-bottom:7px}
+.q-num{font-size:11px;font-weight:700;color:#555;background:#f5f5f5;padding:2px 7px;border-radius:10px}
+.q-cat{font-size:11px;color:#2563a8;font-weight:600;margin-left:7px}
+.q-text{font-size:14px;font-weight:700;line-height:1.45;margin-bottom:10px}
+.q-text-pt{display:block;font-style:italic;color:#2563a8;font-size:12px;margin-top:3px;font-weight:400}
+.opt-btn{display:block;width:100%;background:#f5f5f5;border:2px solid #ddd;border-radius:8px;padding:9px 12px;text-align:left;cursor:pointer;font-size:13px;line-height:1.4;margin-bottom:7px;font-family:Arial,Helvetica,sans-serif;color:#222;box-sizing:border-box}
+.opt-btn.opt-correct{background:#e8f5e9;border-color:#2e7d42;color:#1b5e20}
+.opt-btn.opt-wrong{background:#fdf0f0;border-color:#8b1a1a;color:#8b1a1a}
+.opt-btn.opt-dim{opacity:0.55}
+.opt-pt{display:block;font-style:italic;color:#2563a8;font-size:11px;margin-top:2px}
+.opt-btn.opt-correct .opt-pt{color:#2e7d42}
+.opt-btn.opt-wrong .opt-pt{color:#8b1a1a}
+.feedback{display:none;background:#f5f5f5;border-radius:8px;padding:12px;font-size:13px;line-height:1.55;margin-top:4px}
+.feedback.show{display:block}
+.fb-verdict{font-weight:700;margin-bottom:5px}
+.fb-correct{color:#1a5c2a}
+.fb-wrong{color:#8b1a1a}
+.fb-pt{margin-top:9px;padding-top:8px;border-top:1px dashed #ccc;font-style:italic;color:#1a4f8a;font-size:12px;line-height:1.5}
+.fb-ref{margin-top:7px;font-size:11px;font-weight:700;color:#1a4f8a}
+#finish-bar{text-align:center;padding:14px 0 8px;display:none}
+.result-circle{width:120px;height:120px;border-radius:60px;color:white;font-size:30px;font-weight:700;line-height:120px;text-align:center;margin:0 auto 18px}
+.res-breakdown{margin:20px 0}
+.res-stat{display:inline-block;background:white;border-radius:8px;padding:12px 16px;margin:5px;min-width:80px}
+.res-stat .n{font-size:26px;font-weight:700}
+.res-stat .l{font-size:11px;color:#555}
+.res-stat .lpt{font-size:10px;color:#2563a8;font-style:italic}
+.res-btn{background:#1a5c2a;color:white;border:none;border-radius:25px;padding:11px 24px;font-size:14px;font-weight:700;cursor:pointer;margin:5px;font-family:Arial,Helvetica,sans-serif}
+.res-btn.outline{background:white;color:#1a5c2a;border:2px solid #1a5c2a}
+.res-btn .pt{display:block;font-size:11px;font-style:italic;opacity:0.85;font-weight:400}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge">VSGMC Training Material</div>
+  <h1>R&amp;A Rules of Golf &mdash; Member Training Quiz 3</h1>
+  <div class="sub">Comprehensive Edition &middot; 25 Questions &middot; Edicao Abrangente</div>
+</header>
+
+<div id="start-screen">
+  <h2>Welcome VSGMC Golf Club Member</h2>
+  <div class="start-sub">Bem-vindo Membro do Clube de Golfe VSGMC</div>
+  <p>This comprehensive quiz covers all areas of the R&amp;A Rules of Golf. Each question includes a detailed explanation and rule reference.<br><br>
+  <i style="color:#2563a8;font-size:13px;">Este quiz abrangente cobre todas as areas das Regras de Golfe R&amp;A. Cada pergunta inclui uma explicacao detalhada e referencia a regra.</i></p>
+  <div class="info-row">
+    <div class="info-box"><strong>100</strong><em>Questions</em><span>Perguntas</span></div>
+    <div class="info-box"><strong>5</strong><em>Categories</em><span>Categorias</span></div>
+    <div class="info-box"><strong>70%</strong><em>Pass Mark</em><span>Aprovacao</span></div>
+  </div>
+  <button class="go-btn" id="start-btn">Begin Training <span class="pt">Iniciar Treino</span></button>
+  <p style="margin-top:16px;font-size:11px;color:#1a4f8a;font-style:italic">For Official Rulings Refer to RandA.org &nbsp;|&nbsp; Para Decisoes Oficiais Consulte RandA.org</p>
+  <div class="footer">Author John Gilchrist</div>
+</div>
+
+<div id="quiz-screen">
+  <div class="container">
+    <div class="cat-bar" id="cat-bar"></div>
+    <div class="score-bar">
+      <div class="score-bar-inner">
+        <div class="score-lbl" id="progress-label">0 / 100 answered</div>
+        <div class="score-track-cell"><div class="score-track"><div class="score-fill" id="progress-fill"></div></div></div>
+        <div class="score-num" id="score-display">Score: 0</div>
+      </div>
+    </div>
+    <div id="questions-container"></div>
+    <div id="finish-bar">
+      <button class="go-btn" id="results-btn">View My Results <span class="pt">Ver os Meus Resultados</span></button>
+    </div>
+    <div class="footer">Author John Gilchrist</div>
+  </div>
+</div>
+
+<div id="results-screen">
+  <div class="container">
+    <div class="result-circle" id="result-circle">0%</div>
+    <h2 id="result-title" style="margin:0 0 4px"></h2>
+    <div id="result-title-pt" style="color:#2563a8;font-style:italic;font-size:14px;margin-bottom:8px"></div>
+    <p id="result-msg" style="color:#555;font-size:14px;margin-bottom:4px"></p>
+    <p id="result-msg-pt" style="color:#2563a8;font-style:italic;font-size:13px;margin-bottom:18px"></p>
+    <div class="res-breakdown">
+      <div class="res-stat"><div class="n" id="r-correct" style="color:#1a5c2a">0</div><div class="l">Correct</div><div class="lpt">Correto</div></div>
+      <div class="res-stat"><div class="n" id="r-wrong" style="color:#8b1a1a">0</div><div class="l">Incorrect</div><div class="lpt">Incorreto</div></div>
+      <div class="res-stat"><div class="n" id="r-skip" style="color:#555">0</div><div class="l">Skipped</div><div class="lpt">Nao Resp.</div></div>
+      <div class="res-stat"><div class="n" id="r-pct" style="color:#1a4f8a">0%</div><div class="l">Score</div><div class="lpt">Pontuacao</div></div>
+    </div>
+    <button class="res-btn" id="restart-btn">Retry All Questions <span class="pt">Repetir Todas as Perguntas</span></button>
+    <button class="res-btn outline" id="review-btn">Review Answers <span class="pt">Rever Respostas</span></button>
+    <div class="footer">Author John Gilchrist</div>
+  </div>
+</div>
+
+<script>
+var QUESTIONS = [{"cat": "fundamentals", "catLabel": "Fundamentals | Fundamentos", "q": "Under Rule 1.3b(1), two players agree before the round to give each other a 'gimme' within two feet of the hole in stroke play. What is the result?", "qpt": "De acordo com a Regra 1.3b(1), dois jogadores concordam antes da volta em dar um 'gimme' um ao outro dentro de dois pés do buraco no jogo por pancadas. Qual é o resultado?", "options": ["A two-stroke penalty for each player on every hole where the agreement was applied", "Disqualification of both players", "A one-stroke penalty for each player", "No penalty — the players may agree to modify the Rules as they see fit"], "optionspt": ["Uma penalidade de duas pancadas para cada jogador em cada buraco onde o acordo foi aplicado", "Desqualificação de ambos os jogadores", "Uma pancada de penalidade para cada jogador", "Sem penalidade — os jogadores podem acordar modificar as Regras como entenderem"], "answer": 1, "explanation": "Under Rule 1.3b(1), if players agree to ignore a Rule or a penalty that would apply, both players are disqualified. This applies even if the agreement is made before the round begins. In stroke play, a player cannot waive a penalty for themselves or another player.", "explanationpt": "De acordo com a Regra 1.3b(1), se os jogadores concordarem em ignorar uma Regra ou uma penalidade aplicável, ambos são desqualificados. Isto aplica-se mesmo que o acordo seja feito antes do início da volta. No jogo por pancadas, um jogador não pode dispensar uma penalidade para si próprio ou para outro jogador.", "ref": "Rule 1.3b(1) — Applying the Rules: Agreeing to Ignore Rules (p.22)"}, {"cat": "fundamentals", "catLabel": "Fundamentals | Fundamentos", "q": "Under Rule 1.3c(4), if a player breaches a Local Rule that does not specify its own penalty, what penalty applies?", "qpt": "De acordo com a Regra 1.3c(4), se um jogador infringir uma Regra Local que não especifica a sua própria penalidade, que penalidade se aplica?", "options": ["No penalty — Local Rules are advisory", "One stroke penalty", "The general penalty (loss of hole in match play / two strokes in stroke play)", "Disqualification"], "optionspt": ["Sem penalidade — as Regras Locais são apenas indicativas", "Uma pancada de penalidade", "A penalidade geral (perda do buraco no jogo match / duas pancadas no jogo por pancadas)", "Desqualificação"], "answer": 2, "explanation": "Under Rule 1.3c(4), the general penalty applies to any breach of a Local Rule unless the Local Rule specifies a different penalty. The general penalty is loss of hole in match play or two strokes in stroke play. Local Rules are not merely advisory — breaching them carries the same weight as breaching a Rule of Golf.", "explanationpt": "De acordo com a Regra 1.3c(4), a penalidade geral aplica-se a qualquer infração de uma Regra Local, salvo se esta especificar uma penalidade diferente. A penalidade geral é a perda do buraco no jogo match ou duas pancadas no jogo por pancadas. As Regras Locais não são apenas indicativas — a sua infração tem o mesmo peso que a infração de uma Regra de Golfe.", "ref": "Rule 1.3c(4) — Applying the Rules: Penalty for Breach of Local Rule (p.23)"}, {"cat": "fundamentals", "catLabel": "Fundamentals | Fundamentos", "q": "In match play under Rule 3.2a(1), what happens when a player makes a concession of the opponent's next stroke?", "qpt": "No jogo match, de acordo com a Regra 3.2a(1), o que acontece quando um jogador concede a próxima pancada ao adversário?", "options": ["The opponent must still hole out to confirm the score", "The concession may be declined if the opponent wishes to putt", "The stroke is conceded and cannot be declined or withdrawn — the opponent has holed out with that stroke", "The concession must be approved by the Committee"], "optionspt": ["O adversário ainda deve embocar para confirmar o resultado", "A concessão pode ser recusada se o adversário quiser fazer o putt", "A pancada é concedida e não pode ser recusada ou retirada — o adversário embocou com essa pancada", "A concessão deve ser aprovada pelo Comité"], "answer": 2, "explanation": "Under Rule 3.2a(1), a concession of a stroke, hole, or match may be made at any time and cannot be declined or withdrawn. Once a concession is made, the opponent is considered to have holed out with that stroke. A player cannot revoke a concession once given.", "explanationpt": "De acordo com a Regra 3.2a(1), uma concessão de uma pancada, buraco ou jogo pode ser feita a qualquer momento e não pode ser recusada ou retirada. Uma vez feita a concessão, considera-se que o adversário embocou com essa pancada. Um jogador não pode revogar uma concessão uma vez dada.", "ref": "Rule 3.2a(1) — Match Play: Concession of Stroke, Hole or Match (p.31)"}, {"cat": "fundamentals", "catLabel": "Fundamentals | Fundamentos", "q": "Under Rule 4.1b, in stroke play, a player discovers they have 15 clubs at the start of the 3rd hole. They played holes 1 and 2 with 15 clubs. What is the penalty?", "qpt": "De acordo com a Regra 4.1b, no jogo por pancadas, um jogador descobre que tem 15 tacos no início do 3.º buraco. Jogou os buracos 1 e 2 com 15 tacos. Qual é a penalidade?", "options": ["Two strokes total — one per hole of breach", "Four strokes — the maximum (two strokes per hole, capped at two holes)", "Disqualification", "Two strokes — for the first hole of breach only"], "optionspt": ["Duas pancadas no total — uma por buraco de infração", "Quatro pancadas — o máximo (duas pancadas por buraco, limitado a dois buracos)", "Desqualificação", "Duas pancadas — apenas pelo primeiro buraco de infração"], "answer": 1, "explanation": "Under Rule 4.1b(1), in stroke play the penalty for having more than 14 clubs is two strokes for each hole where a breach existed, with a maximum penalty of four strokes (i.e., two holes × two strokes). Since the breach occurred on holes 1 and 2, the penalty is four strokes. The excess club must be immediately declared out of play.", "explanationpt": "De acordo com a Regra 4.1b(1), no jogo por pancadas a penalidade por ter mais de 14 tacos é de duas pancadas por cada buraco onde ocorreu a infração, com uma penalidade máxima de quatro pancadas (ou seja, dois buracos × duas pancadas). Uma vez que a infração ocorreu nos buracos 1 e 2, a penalidade é de quatro pancadas. O taco a mais deve ser imediatamente declarado fora de jogo.", "ref": "Rule 4.1b(1) — Penalty for Breach of Club Limit (Stroke Play, p.40)"}, {"cat": "fundamentals", "catLabel": "Fundamentals | Fundamentos", "q": "Under Rule 1.2a, when may a Committee disqualify a player for behaviour contrary to the spirit of the game?", "qpt": "De acordo com a Regra 1.2a, quando pode um Comité desqualificar um jogador por comportamento contrário ao espírito do jogo?", "options": ["Whenever the player breaks any Rule, even unintentionally", "When the player has committed serious misconduct — behaviour so contrary to the expected norms that disqualification is warranted", "Only when a referee witnesses the behaviour directly", "Whenever another competitor makes a formal complaint"], "optionspt": ["Sempre que o jogador infringir qualquer Regra, mesmo que involuntariamente", "Quando o jogador cometeu má conduta grave — comportamento tão contrário às normas esperadas que a desqualificação é justificada", "Apenas quando um árbitro testemunha diretamente o comportamento", "Sempre que outro competidor apresentar uma queixa formal"], "answer": 1, "explanation": "Rule 1.2a allows the Committee to disqualify a player for 'serious misconduct' — behaviour so far outside what is expected in golf that removal from the competition is the only appropriate response. Ordinary Rule breaches are dealt with by defined penalties; disqualification for misconduct is reserved for extreme situations.", "explanationpt": "A Regra 1.2a permite ao Comité desqualificar um jogador por 'má conduta grave' — comportamento tão afastado do esperado no golfe que a remoção da competição é a única resposta adequada. As infrações ordinárias às Regras são tratadas com penalidades definidas; a desqualificação por má conduta está reservada para situações extremas.", "ref": "Rule 1.2a — Standards of Player Conduct: Serious Misconduct (p.21)"}, {"cat": "round", "catLabel": "Round & Hole | Volta e Buraco", "q": "Under Rule 5.1, when does a player's round officially begin?", "qpt": "De acordo com a Regra 5.1, quando começa oficialmente a volta de um jogador?", "options": ["When the player arrives at the first tee", "When the player makes their first stroke on the first hole", "When the player signs in with the starter", "When the Committee announces the start of play"], "optionspt": ["Quando o jogador chega à primeira saída", "Quando o jogador faz a sua primeira pancada no primeiro buraco", "Quando o jogador se apresenta ao starter", "Quando o Comité anuncia o início do jogo"], "answer": 1, "explanation": "Under Rule 5.1, a player's round begins when the player makes their first stroke on the first hole of the round. Before that stroke is made, the player may still withdraw or change equipment, subject to the Rules. Once that first stroke is made, the round is underway.", "explanationpt": "De acordo com a Regra 5.1, a volta de um jogador começa quando o jogador faz a sua primeira pancada no primeiro buraco da volta. Antes de essa pancada ser feita, o jogador pode ainda retirar-se ou alterar o equipamento, sujeito às Regras. Uma vez feita essa primeira pancada, a volta está em curso.", "ref": "Rule 5.1 — Meaning of Round (p.47)"}, {"cat": "round", "catLabel": "Round & Hole | Volta e Buraco", "q": "Under Rule 5.6b, what is the recommended time per stroke in the R&A's pace of play guidelines?", "qpt": "De acordo com a Regra 5.6b, qual é o tempo recomendado por pancada nas diretrizes de ritmo de jogo da R&A?", "options": ["30 seconds per stroke", "40 seconds per stroke", "60 seconds per stroke", "No specific time is given — a 'reasonable time' only"], "optionspt": ["30 segundos por pancada", "40 segundos por pancada", "60 segundos por pancada", "Não é dado nenhum tempo específico — apenas um 'tempo razoável'"], "answer": 1, "explanation": "Rule 5.6b states that a player should make each stroke in no more than 40 seconds after they are able to play without interference, recognising it should usually take less time. The first player to play may have extra time. The Committee may set a different pace of play policy through a Local Rule.", "explanationpt": "A Regra 5.6b estabelece que um jogador deve fazer cada pancada em no máximo 40 segundos após poder jogar sem interferência, reconhecendo que normalmente deve demorar menos tempo. O primeiro jogador a jogar pode ter mais tempo. O Comité pode definir uma política de ritmo de jogo diferente através de uma Regra Local.", "ref": "Rule 5.6b — Pace of Play: Recommended Time per Stroke (p.52)"}, {"cat": "round", "catLabel": "Round & Hole | Volta e Buraco", "q": "Under Rule 6.1b, in match play, if a player starts a round with 15 clubs, what is the maximum penalty?", "qpt": "De acordo com a Regra 6.1b, no jogo match, se um jogador iniciar uma volta com 15 tacos, qual é a penalidade máxima?", "options": ["Disqualification", "Loss of four holes", "Reduction of two holes in the match result", "Loss of one hole — the first hole where the breach occurred"], "optionspt": ["Desqualificação", "Perda de quatro buracos", "Redução de dois buracos no resultado do jogo", "Perda de um buraco — o primeiro onde ocorreu a infração"], "answer": 2, "explanation": "Under Rule 4.1b(2), in match play the penalty for having more than 14 clubs is the adjustment of the match score by one hole for each hole at which the breach existed, with a maximum deduction of two holes. So a player starting with 15 clubs loses at most two holes from their match score.", "explanationpt": "De acordo com a Regra 4.1b(2), no jogo match a penalidade por ter mais de 14 tacos é o ajuste do resultado do jogo em um buraco por cada buraco em que a infração existiu, com uma dedução máxima de dois buracos. Assim, um jogador que inicie com 15 tacos perde no máximo dois buracos do seu resultado.", "ref": "Rule 4.1b(2) — Penalty for Breach of Club Limit (Match Play, p.40)"}, {"cat": "round", "catLabel": "Round & Hole | Volta e Buraco", "q": "Under Rule 6.2b(6), in match play, if a player plays from outside the teeing area, what may the opponent do?", "qpt": "De acordo com a Regra 6.2b(6), no jogo match, se um jogador jogar de fora da zona de saída, o que pode o adversário fazer?", "options": ["Accept the stroke and play on", "Require the player to cancel the stroke and play again from within the teeing area", "Apply a two-stroke penalty", "Report it to the Committee only"], "optionspt": ["Aceitar a pancada e continuar", "Exigir que o jogador cancele a pancada e jogue novamente de dentro da zona de saída", "Aplicar uma penalidade de duas pancadas", "Reportá-lo apenas ao Comité"], "answer": 1, "explanation": "Under Rule 6.2b(6), in match play there is no penalty if a player tees off from outside the teeing area. However, the opponent may require the player to cancel the stroke and play again from within the teeing area. If the opponent does not require the replay, the stroke stands and the ball is in play.", "explanationpt": "De acordo com a Regra 6.2b(6), no jogo match não há penalidade se um jogador iniciar de fora da zona de saída. No entanto, o adversário pode exigir que o jogador cancele a pancada e jogue novamente de dentro da zona de saída. Se o adversário não exigir a repetição, a pancada mantém-se e a bola está em jogo.", "ref": "Rule 6.2b(6) — Playing from Outside Teeing Area in Match Play (p.57)"}, {"cat": "round", "catLabel": "Round & Hole | Volta e Buraco", "q": "Under Rule 6.2b(5), in stroke play, if a player plays from outside the teeing area, what is the penalty?", "qpt": "De acordo com a Regra 6.2b(5), no jogo por pancadas, se um jogador jogar de fora da zona de saída, qual é a penalidade?", "options": ["Disqualification", "One-stroke penalty, play from where ball lies", "Two-stroke penalty; must replay from within the teeing area — stroke does not count", "Two-stroke penalty; ball played counts and is in play from where it came to rest"], "optionspt": ["Desqualificação", "Uma pancada de penalidade, jogar de onde a bola está", "Duas pancadas de penalidade; deve repetir de dentro da zona de saída — a pancada não conta", "Duas pancadas de penalidade; a bola jogada conta e está em jogo de onde parou"], "answer": 2, "explanation": "Under Rule 6.2b(5), in stroke play if a player plays from outside the teeing area the stroke does not count and a two-stroke penalty is added. The player must correct the error by playing from within the teeing area. If the player does not correct the error before playing from the next teeing area, they are disqualified.", "explanationpt": "De acordo com a Regra 6.2b(5), no jogo por pancadas se um jogador jogar de fora da zona de saída, a pancada não conta e são adicionadas duas pancadas de penalidade. O jogador deve corrigir o erro jogando de dentro da zona de saída. Se o jogador não corrigir o erro antes de jogar da próxima zona de saída, é desqualificado.", "ref": "Rule 6.2b(5) — Playing from Outside Teeing Area in Stroke Play (p.57)"}, {"cat": "ball", "catLabel": "Playing the Ball | Jogar a Bola", "q": "Under Rule 7.1a, if a player accidentally moves their ball while searching for it, what is the ruling?", "qpt": "De acordo com a Regra 7.1a, se um jogador mover acidentalmente a sua bola enquanto a procura, qual é a decisão?", "options": ["One-stroke penalty; play from where it came to rest", "Two-stroke penalty; replace the ball", "No penalty; the ball must be replaced", "No penalty; play the ball from its new position"], "optionspt": ["Uma pancada de penalidade; jogar de onde a bola ficou", "Duas pancadas de penalidade; repor a bola", "Sem penalidade; a bola deve ser reposta", "Sem penalidade; jogar a bola da sua nova posição"], "answer": 2, "explanation": "Under Rule 7.4, there is no penalty if a player, opponent, or anyone else accidentally moves a ball while searching for it. The ball must be replaced on its original spot. If the original spot is not known, the player must estimate and replace the ball on the estimated spot.", "explanationpt": "De acordo com a Regra 7.4, não há penalidade se um jogador, adversário, ou qualquer outra pessoa mover acidentalmente uma bola enquanto a procura. A bola deve ser reposta no seu local original. Se o local original não for conhecido, o jogador deve estimar e repor a bola no local estimado.", "ref": "Rule 7.4 — Ball Accidentally Moved in Searching (p.68)"}, {"cat": "ball", "catLabel": "Playing the Ball | Jogar a Bola", "q": "Under Rule 7.2, a player believes their ball may be their own but cannot see any markings. What must they do to identify it?", "qpt": "De acordo com a Regra 7.2, um jogador acredita que a sua bola pode ser a sua mas não consegue ver qualquer marcação. O que deve fazer para a identificar?", "options": ["Pick up the ball immediately and clean it", "Mark the ball's position, lift it, and inspect the markings — without cleaning more than necessary", "Ask a fellow competitor to confirm the identity", "Play the ball as their own and check after the hole"], "optionspt": ["Pegar imediatamente na bola e limpá-la", "Marcar a posição da bola, levantá-la e inspecionar as marcações — sem limpar mais do que o necessário", "Pedir a um companheiro de grupo que confirme a identidade", "Jogar a bola como sua e verificar após o buraco"], "answer": 1, "explanation": "Under Rule 7.3, a player may lift their ball to identify it without penalty. The player must first mark the position of the ball, then lift it. The ball must not be cleaned more than is needed to identify it. If the player fails to mark the position before lifting, a one-stroke penalty applies.", "explanationpt": "De acordo com a Regra 7.3, um jogador pode levantar a sua bola para a identificar sem penalidade. O jogador deve primeiro marcar a posição da bola e depois levantá-la. A bola não deve ser limpa mais do que o necessário para a identificar. Se o jogador não marcar a posição antes de a levantar, aplica-se uma penalidade de uma pancada.", "ref": "Rule 7.3 — Lifting Ball to Identify (p.68)"}, {"cat": "ball", "catLabel": "Playing the Ball | Jogar a Bola", "q": "Under Rule 9.2a, another player in the same group accidentally moves your ball. What is the ruling?", "qpt": "De acordo com a Regra 9.2a, outro jogador do mesmo grupo move acidentalmente a sua bola. Qual é a decisão?", "options": ["One-stroke penalty for the player who moved it; ball must be replaced", "Two-stroke penalty for the player whose ball was moved", "No penalty; the ball must be replaced on its original spot", "No penalty; play the ball from its new position"], "optionspt": ["Uma pancada de penalidade para o jogador que a moveu; a bola deve ser reposta", "Duas pancadas de penalidade para o jogador cuja bola foi movida", "Sem penalidade; a bola deve ser reposta no seu local original", "Sem penalidade; jogar a bola da sua nova posição"], "answer": 2, "explanation": "Under Rule 9.6, if a player's ball is moved by an outside influence (including another player who is an outside influence in stroke play), there is no penalty to anyone. The ball must be replaced on its original spot. If the spot is unknown, it must be estimated.", "explanationpt": "De acordo com a Regra 9.6, se a bola de um jogador for movida por uma influência exterior (incluindo outro jogador que é uma influência exterior no jogo por pancadas), não há penalidade para ninguém. A bola deve ser reposta no seu local original. Se o local for desconhecido, deve ser estimado.", "ref": "Rule 9.6 — Ball Moved by Outside Influence (p.77)"}, {"cat": "ball", "catLabel": "Playing the Ball | Jogar a Bola", "q": "Under Rule 9.4b, if a player accidentally moves their ball while taking their stance on the putting green, what is the ruling?", "qpt": "De acordo com a Regra 9.4b, se um jogador mover acidentalmente a sua bola ao tomar a sua posição no green, qual é a decisão?", "options": ["No penalty; play from new position", "No penalty; replace the ball", "One-stroke penalty; replace the ball", "Two-stroke penalty; replace the ball"], "optionspt": ["Sem penalidade; jogar da nova posição", "Sem penalidade; repor a bola", "Uma pancada de penalidade; repor a bola", "Duas pancadas de penalidade; repor a bola"], "answer": 2, "explanation": "Under Rule 9.4b, if a player or caddie accidentally causes the ball to move (other than in specific excepted situations like searching), the player incurs one penalty stroke and must replace the ball. This applies on the putting green when moving the ball while taking a stance.", "explanationpt": "De acordo com a Regra 9.4b, se um jogador ou caddie causar acidentalmente o movimento da bola (exceto em situações específicas como durante a procura), o jogador incorre numa pancada de penalidade e deve repor a bola. Isto aplica-se no green quando a bola é movida ao tomar a posição.", "ref": "Rule 9.4b — Ball Accidentally Moved by Player (p.76)"}, {"cat": "ball", "catLabel": "Playing the Ball | Jogar a Bola", "q": "Under Rule 10.1a, a player's club touches the ball on the downswing before the player intends. Is this a stroke?", "qpt": "De acordo com a Regra 10.1a, o taco de um jogador toca na bola na descida antes do pretendido. Isto é uma pancada?", "options": ["No — only a deliberate swing counts as a stroke", "Yes — any contact between club and ball during a swing is a stroke", "Only if the ball moves more than one club-length", "Yes, but only if the player intended to hit the ball at that moment"], "optionspt": ["Não — apenas um swing deliberado conta como pancada", "Sim — qualquer contacto entre o taco e a bola durante um swing é uma pancada", "Apenas se a bola se mover mais de um comprimento de taco", "Sim, mas apenas se o jogador pretendia acertar na bola naquele momento"], "answer": 1, "explanation": "Under Rule 10.1a, a stroke is made when the player deliberately moves the club to hit the ball. The forward swing of the club is a stroke even if the player tries to stop and cannot — the downswing counts once started. However, if the club accidentally touches the ball (without any swing motion), it is not a stroke.", "explanationpt": "De acordo com a Regra 10.1a, uma pancada é realizada quando o jogador move deliberadamente o taco para acertar na bola. O swing para a frente do taco é uma pancada mesmo que o jogador tente parar e não consiga — a descida conta uma vez iniciada. No entanto, se o taco tocar acidentalmente na bola (sem qualquer movimento de swing), não é uma pancada.", "ref": "Rule 10.1a — Making a Stroke (p.79)"}, {"cat": "relief", "catLabel": "Relief Rules | Regras de Alívio", "q": "Under Rule 15.1a, which of the following is a loose impediment?", "qpt": "De acordo com a Regra 15.1a, qual das seguintes é um impedimento solto?", "options": ["A stone embedded in the ground", "A broken tee", "A worm cast on the fairway", "A stake marking a penalty area"], "optionspt": ["Uma pedra cravada no solo", "Um tee partido", "Uma minhocada no fairway", "Uma estaca a marcar uma área de penalidade"], "answer": 2, "explanation": "Loose impediments are natural objects that are not fixed or growing, are not solidly embedded, and are not stuck to the ball. Examples include worm casts, leaves, twigs, dung, insects, and loose stones. A stake is an artificial object (an obstruction); a broken tee is an artificial object. An embedded stone is not a loose impediment. A worm cast is a classic loose impediment.", "explanationpt": "Os impedimentos soltos são objetos naturais que não estão fixos ou a crescer, não estão solidamente cravados e não estão colados à bola. Exemplos incluem minhocadas, folhas, galhos, estrume, insetos e pedras soltas. Uma estaca é um objeto artificial (um obstáculo); um tee partido é um objeto artificial. Uma pedra cravada não é um impedimento solto. Uma minhocada é um impedimento solto clássico.", "ref": "Rule 15.1a / Definitions — Loose Impediments (p.108, 204)"}, {"cat": "relief", "catLabel": "Relief Rules | Regras de Alívio", "q": "Under Rule 15.2a, what is a movable obstruction?", "qpt": "De acordo com a Regra 15.2a, o que é um obstáculo móvel?", "options": ["Any natural object that can be picked up", "An artificial object that can be moved without unreasonable effort or causing damage", "A penalty area boundary stake", "An immovable structure like a bridge"], "optionspt": ["Qualquer objeto natural que possa ser apanhado", "Um objeto artificial que possa ser movido sem esforço irrazoável ou causar danos", "Uma estaca de limite de área de penalidade", "Uma estrutura inamovível como uma ponte"], "answer": 1, "explanation": "A movable obstruction is an artificial object (man-made) that can be moved without unreasonable effort and without damaging the object or the course. Examples include rakes, bottles, cans, and equipment. Penalty area stakes are obstructions but may be classified as immovable. Natural objects like leaves and sticks are loose impediments, not obstructions.", "explanationpt": "Um obstáculo móvel é um objeto artificial (feito pelo homem) que pode ser movido sem esforço irrazoável e sem danificar o objeto ou o campo. Exemplos incluem ancinhos, garrafas, latas e equipamento. As estacas de área de penalidade são obstáculos mas podem ser classificadas como inamovíveis. Objetos naturais como folhas e paus são impedimentos soltos, não obstáculos.", "ref": "Rule 15.2a / Definitions — Movable Obstruction (p.110, 206)"}, {"cat": "relief", "catLabel": "Relief Rules | Regras de Alívio", "q": "Under Rule 16.1b, what is the relief area when taking free relief from an abnormal course condition in the general area?", "qpt": "De acordo com a Regra 16.1b, qual é a área de alívio ao tomar alívio gratuito de uma condição anormal do campo na área geral?", "options": ["Two club-lengths from the nearest point of complete relief, not nearer to the hole", "One club-length from the nearest point of complete relief, not nearer to the hole", "Anywhere on the course within the same area", "Within the nearest fairway area"], "optionspt": ["Dois comprimentos de taco do ponto mais próximo de alívio completo, não mais perto do buraco", "Um comprimento de taco do ponto mais próximo de alívio completo, não mais perto do buraco", "Em qualquer parte do campo dentro da mesma área", "Dentro da área de fairway mais próxima"], "answer": 1, "explanation": "Under Rule 16.1b, free relief from an abnormal course condition (GUR, animal holes, immovable obstructions, temporary water) in the general area requires the player to determine the nearest point of complete relief and drop within one club-length of that point, not nearer to the hole. The dropped ball must also come to rest in the same area of the course.", "explanationpt": "De acordo com a Regra 16.1b, o alívio gratuito de uma condição anormal do campo (TRI, buracos de animais, obstáculos inamovíveis, água temporária) na área geral requer que o jogador determine o ponto mais próximo de alívio completo e largue a bola dentro de um comprimento de taco desse ponto, não mais perto do buraco. A bola largada também deve ficar na mesma área do campo.", "ref": "Rule 16.1b — Relief from Abnormal Course Conditions in General Area (p.114)"}, {"cat": "relief", "catLabel": "Relief Rules | Regras de Alívio", "q": "Under Rule 17.1c, what are the two relief options for a ball in a yellow penalty area?", "qpt": "De acordo com a Regra 17.1c, quais são as duas opções de alívio para uma bola numa área de penalidade amarela?", "options": ["Free relief only, or play it as it lies", "Stroke and distance, or lateral relief within two club-lengths", "Stroke and distance, or back-on-the-line relief", "Stroke and distance only"], "optionspt": ["Apenas alívio gratuito, ou jogá-la como está", "Pancada e distância, ou alívio lateral dentro de dois comprimentos de taco", "Pancada e distância, ou alívio na linha de trás", "Apenas pancada e distância"], "answer": 2, "explanation": "Under Rule 17.1c, when a ball is in a yellow penalty area, the player may (1) play a ball under stroke and distance (return to where the previous stroke was played, one penalty stroke), or (2) take back-on-the-line relief by dropping behind the penalty area on the line from the hole through the ball's last entry point (one penalty stroke). Lateral (two club-length) relief is only available for red penalty areas.", "explanationpt": "De acordo com a Regra 17.1c, quando uma bola está numa área de penalidade amarela, o jogador pode (1) jogar uma bola por pancada e distância (regressar a onde foi feita a pancada anterior, uma pancada de penalidade), ou (2) tomar alívio na linha de trás, largando atrás da área de penalidade na linha do buraco através do último ponto de entrada da bola (uma pancada de penalidade). O alívio lateral (dois comprimentos de taco) está apenas disponível para áreas de penalidade vermelhas.", "ref": "Rule 17.1c — Relief for Yellow Penalty Area (p.123)"}, {"cat": "relief", "catLabel": "Relief Rules | Regras de Alívio", "q": "Under Rule 17.1d, what are the THREE relief options for a ball in a red penalty area?", "qpt": "De acordo com a Regra 17.1d, quais são as TRÊS opções de alívio para uma bola numa área de penalidade vermelha?", "options": ["Play as lies, stroke-and-distance, or lateral relief", "Stroke-and-distance, back-on-the-line, and lateral relief within two club-lengths of entry point", "Free relief, stroke-and-distance, or back-on-the-line", "Lateral relief, back-on-the-line, or free drop in nearest fairway"], "optionspt": ["Jogar como está, pancada e distância, ou alívio lateral", "Pancada e distância, alívio na linha de trás, e alívio lateral dentro de dois comprimentos de taco do ponto de entrada", "Alívio gratuito, pancada e distância, ou alívio na linha de trás", "Alívio lateral, alívio na linha de trás, ou largar gratuitamente no fairway mais próximo"], "answer": 1, "explanation": "Under Rule 17.1d, when a ball is in a red penalty area, the player has three options (all with one penalty stroke): (1) stroke and distance, (2) back-on-the-line relief (behind the penalty area on the line from hole through entry point), or (3) lateral relief — drop within two club-lengths of where the ball last entered the penalty area, not nearer the hole.", "explanationpt": "De acordo com a Regra 17.1d, quando uma bola está numa área de penalidade vermelha, o jogador tem três opções (todas com uma pancada de penalidade): (1) pancada e distância, (2) alívio na linha de trás (atrás da área de penalidade na linha do buraco através do ponto de entrada), ou (3) alívio lateral — largar dentro de dois comprimentos de taco de onde a bola entrou pela última vez na área de penalidade, não mais perto do buraco.", "ref": "Rule 17.1d — Relief for Red Penalty Area (p.124)"}, {"cat": "forms", "catLabel": "Forms of Play | Formas de Jogo", "q": "Under Rule 21.2, what is the Maximum Score format?", "qpt": "De acordo com a Regra 21.2, o que é o formato de Pontuação Máxima?", "options": ["A format where the player tries to score as many strokes as possible", "A format where the Committee sets a maximum score for each hole; once reached, the player picks up", "A format where only the highest score in the group counts", "A team format where the maximum combined score wins"], "optionspt": ["Um formato em que o jogador tenta fazer o maior número de pancadas possível", "Um formato em que o Comité define uma pontuação máxima para cada buraco; uma vez atingida, o jogador pega na bola", "Um formato em que apenas a pontuação mais alta do grupo conta", "Um formato de equipa em que a pontuação combinada máxima vence"], "answer": 1, "explanation": "Under Rule 21.2, Maximum Score is a stroke play format where the Committee sets a maximum score for each hole (e.g., double par, net double bogey). Once a player's score equals that maximum, they pick up. It is similar to Stableford but retains stroke play scoring. The winner has the lowest total stroke score.", "explanationpt": "De acordo com a Regra 21.2, a Pontuação Máxima é um formato de jogo por pancadas em que o Comité define uma pontuação máxima para cada buraco (por ex., duplo par, duplo bogey líquido). Uma vez que a pontuação de um jogador iguale esse máximo, ele pega na bola. É semelhante ao Stableford mas mantém a pontuação por pancadas. O vencedor tem a pontuação total de pancadas mais baixa.", "ref": "Rule 21.2 — Maximum Score Format (p.160)"}, {"cat": "forms", "catLabel": "Forms of Play | Formas de Jogo", "q": "Under Rule 22.3, in Foursomes stroke play, if the wrong partner plays a stroke, what is the ruling?", "qpt": "De acordo com a Regra 22.3, no Foursomes por pancadas, se o parceiro errado fizer uma pancada, qual é a decisão?", "options": ["No penalty — it is the partner's choice who plays", "One-stroke penalty; the stroke counts", "The general penalty (two strokes); the stroke counts and the correct partner plays next", "The hole is cancelled and replayed"], "optionspt": ["Sem penalidade — é escolha do parceiro quem joga", "Uma pancada de penalidade; a pancada conta", "A penalidade geral (duas pancadas); a pancada conta e o parceiro correto joga a seguir", "O buraco é cancelado e repetido"], "answer": 2, "explanation": "Under Rule 22.3, in Foursomes stroke play, partners must alternate making strokes. If the wrong partner plays, the general penalty (two strokes) applies and the breach must be corrected — the correct partner must play the next stroke. In match play, the opponents may cancel the stroke and require it to be played by the correct partner.", "explanationpt": "De acordo com a Regra 22.3, no Foursomes por pancadas, os parceiros devem alternar as pancadas. Se o parceiro errado jogar, aplica-se a penalidade geral (duas pancadas) e a infração deve ser corrigida — o parceiro correto deve fazer a próxima pancada. No jogo match, os adversários podem cancelar a pancada e exigir que seja feita pelo parceiro correto.", "ref": "Rule 22.3 — Foursomes: Wrong Partner Plays (p.165)"}, {"cat": "forms", "catLabel": "Forms of Play | Formas de Jogo", "q": "Under Rule 3.2c, how is the result of a match play competition decided if it is all square after the final hole?", "qpt": "De acordo com a Regra 3.2c, como é decidido o resultado de uma competição de jogo match se estiver empatado após o buraco final?", "options": ["The result is a tie — both players share the prize", "Sudden death playoff — playing hole by hole until one player wins", "Stroke play tiebreaker", "The Committee decides by lot"], "optionspt": ["O resultado é um empate — ambos os jogadores partilham o prémio", "Desempate em morte súbita — jogando buraco a buraco até um jogador vencer", "Desempate por jogo por pancadas", "O Comité decide por sorteio"], "answer": 1, "explanation": "Under Rule 3.2c, if a match is all square at the end of the stipulated round, it continues hole by hole (sudden death) until one side wins a hole. The match result cannot be a tie unless the Committee's terms of competition specifically provide for a tie result. Play continues until someone wins a hole.", "explanationpt": "De acordo com a Regra 3.2c, se um jogo match estiver empatado no final da volta estipulada, continua buraco a buraco (morte súbita) até que um lado ganhe um buraco. O resultado do jogo match não pode ser um empate, a menos que as condições de competição do Comité prevejam especificamente um resultado de empate. O jogo continua até alguém ganhar um buraco.", "ref": "Rule 3.2c — Match Play: All Square After Final Hole (p.33)"}, {"cat": "forms", "catLabel": "Forms of Play | Formas de Jogo", "q": "Under Rule 23.5b, in Four-Ball, if a player plays a stroke with their partner's ball (wrong ball), what is the penalty?", "qpt": "De acordo com a Regra 23.5b, no Four-Ball, se um jogador fizer uma pancada com a bola do seu parceiro (bola errada), qual é a penalidade?", "options": ["No penalty — partners may share balls in Four-Ball", "The general penalty applies to the player who played the wrong ball", "One-stroke penalty to both partners", "The side loses the hole"], "optionspt": ["Sem penalidade — os parceiros podem partilhar bolas no Four-Ball", "A penalidade geral aplica-se ao jogador que jogou a bola errada", "Uma pancada de penalidade para ambos os parceiros", "O lado perde o buraco"], "answer": 1, "explanation": "Under Rule 23.5b, in Four-Ball, each player must play their own ball. Playing a partner's ball is playing a wrong ball. The general penalty applies to the player who made the stroke with the wrong ball. The partner's ball must be replaced. The partner's round is not affected.", "explanationpt": "De acordo com a Regra 23.5b, no Four-Ball, cada jogador deve jogar a sua própria bola. Jogar a bola do parceiro é jogar uma bola errada. A penalidade geral aplica-se ao jogador que fez a pancada com a bola errada. A bola do parceiro deve ser reposta. A volta do parceiro não é afetada.", "ref": "Rule 23.5b — Four-Ball: Playing Partner's Ball (p.171)"}, {"cat": "forms", "catLabel": "Forms of Play | Formas de Jogo", "q": "Under Rule 23.4, in Four-Ball match play, if one partner is disqualified for a hole, what happens to the side?", "qpt": "De acordo com a Regra 23.4, no Four-Ball jogo match, se um parceiro é desqualificado de um buraco, o que acontece ao lado?", "options": ["Both partners are disqualified for the match", "The side loses the hole automatically", "The other partner continues to play their own ball — only the disqualified player's ball is out of play for that hole", "The side must concede the hole and all remaining holes"], "optionspt": ["Ambos os parceiros são desqualificados do jogo", "O lado perde automaticamente o buraco", "O outro parceiro continua a jogar a sua própria bola — apenas a bola do jogador desqualificado está fora de jogo para esse buraco", "O lado deve conceder o buraco e todos os buracos restantes"], "answer": 2, "explanation": "Under Rule 23.4, in Four-Ball, the disqualification of one partner for a hole does not disqualify the other. The remaining partner continues to play, and if they complete the hole, their score counts for the side. Each partner's breach only affects themselves, not the other partner, for that hole.", "explanationpt": "De acordo com a Regra 23.4, no Four-Ball, a desqualificação de um parceiro de um buraco não desqualifica o outro. O parceiro restante continua a jogar, e se completar o buraco, a sua pontuação conta para o lado. A infração de cada parceiro afeta apenas a si mesmo, não o outro parceiro, para esse buraco.", "ref": "Rule 23.4 — Four-Ball: Disqualification of One Partner (p.170)"}];
+
+var CATS = [
+  {id:"all",en:"All Questions",pt:"Todas as Perguntas"},
+  {id:"fundamentals",en:"Fundamentals",pt:"Fundamentos"},
+  {id:"round",en:"Round & Hole",pt:"Volta e Buraco"},
+  {id:"ball",en:"Playing the Ball",pt:"Jogar a Bola"},
+  {id:"relief",en:"Relief Rules",pt:"Regras de Alivio"},
+  {id:"forms",en:"Forms of Play",pt:"Formas de Jogo"}
+];
+
+var currentCat = "all";
+var answered = {};
+var score = 0;
+
+function $(id){ return document.getElementById(id); }
+
+function show(id){ $(id).style.display = "block"; }
+function hide(id){ $(id).style.display = "none"; }
+
+function startQuiz(){
+  hide("start-screen");
+  show("quiz-screen");
+  buildCatBar();
+  buildCards();
+  updateBar();
+}
+
+function buildCatBar(){
+  var bar = $("cat-bar");
+  bar.innerHTML = "";
+  for(var i=0; i<CATS.length; i++){
+    var c = CATS[i];
+    var btn = document.createElement("button");
+    btn.className = "cat-btn" + (c.id === "all" ? " active" : "");
+    btn.appendChild(document.createTextNode(c.en));
+    var bpt = document.createElement("span");
+    bpt.className = "opt-pt";
+    bpt.appendChild(document.createTextNode(c.pt));
+    btn.appendChild(bpt);
+    btn.setAttribute("data-cat", c.id);
+    btn.onclick = makeCatHandler(c.id, btn);
+    bar.appendChild(btn);
+  }
+}
+
+function makeCatHandler(catId, btn){
+  return function(){
+    currentCat = catId;
+    var btns = document.querySelectorAll(".cat-btn");
+    for(var i=0; i<btns.length; i++){
+      btns[i].className = "cat-btn";
+    }
+    btn.className = "cat-btn active";
+    var cards = document.querySelectorAll(".q-card");
+    for(var i=0; i<cards.length; i++){
+      var cardCat = cards[i].getAttribute("data-cat");
+      if(catId !== "all" && cardCat !== catId){
+        cards[i].style.display = "none";
+      } else {
+        cards[i].style.display = "block";
+      }
+    }
+    updateBar();
+    checkFinish();
+  };
+}
+
+function buildCards(){
+  var container = $("questions-container");
+  container.innerHTML = "";
+  for(var gi=0; gi<QUESTIONS.length; gi++){
+    container.appendChild(makeCard(gi));
+  }
+}
+
+function makeCard(gi){
+  var q = QUESTIONS[gi];
+  var ans = answered[gi];
+  var done = (ans !== undefined);
+
+  var card = document.createElement("div");
+  card.className = "q-card" + (done ? (ans===q.answer ? " correct-card" : " wrong-card") : "");
+  card.setAttribute("data-cat", q.cat);
+
+  var meta = document.createElement("div");
+  meta.className = "q-meta";
+  var qnum = document.createElement("span");
+  qnum.className = "q-num";
+  qnum.appendChild(document.createTextNode("Q" + (gi+1)));
+  meta.appendChild(qnum);
+  var qcat = document.createElement("span");
+  qcat.className = "q-cat";
+  qcat.appendChild(document.createTextNode(q.catLabel));
+  meta.appendChild(qcat);
+  card.appendChild(meta);
+
+  var qtxt = document.createElement("div");
+  qtxt.className = "q-text";
+  qtxt.appendChild(document.createTextNode(q.q));
+  var qpt = document.createElement("span");
+  qpt.className = "q-text-pt";
+  qpt.appendChild(document.createTextNode(q.qpt));
+  qtxt.appendChild(qpt);
+  card.appendChild(qtxt);
+
+  var optsDiv = document.createElement("div");
+  for(var oi=0; oi<q.options.length; oi++){
+    optsDiv.appendChild(makeOptBtn(gi, oi, done, ans, q));
+  }
+  card.appendChild(optsDiv);
+
+  var fb = document.createElement("div");
+  fb.className = "feedback" + (done ? " show" : "");
+  fb.id = "fb-" + gi;
+  if(done){
+    var correct = (ans === q.answer);
+    var verdict = document.createElement("div");
+    verdict.className = "fb-verdict " + (correct ? "fb-correct" : "fb-wrong");
+    verdict.appendChild(document.createTextNode(correct ? "Correct | Correto" : "Incorrect | Incorreto"));
+    fb.appendChild(verdict);
+    var expl = document.createElement("div");
+    expl.appendChild(document.createTextNode(q.explanation));
+    fb.appendChild(expl);
+    var explpt = document.createElement("div");
+    explpt.className = "fb-pt";
+    explpt.appendChild(document.createTextNode(q.explanationpt));
+    fb.appendChild(explpt);
+    var ref = document.createElement("div");
+    ref.className = "fb-ref";
+    ref.appendChild(document.createTextNode(q.ref));
+    fb.appendChild(ref);
+  }
+  card.appendChild(fb);
+  return card;
+}
+
+function makeOptBtn(gi, oi, done, ans, q){
+  var btn = document.createElement("button");
+  var cls = "opt-btn";
+  if(done){
+    if(oi === q.answer){ cls += " opt-correct"; }
+    else if(oi === ans){ cls += " opt-wrong"; }
+    else { cls += " opt-dim"; }
+  }
+  btn.className = cls;
+  btn.disabled = done;
+  btn.appendChild(document.createTextNode(q.options[oi]));
+  var pt = document.createElement("span");
+  pt.className = "opt-pt";
+  pt.appendChild(document.createTextNode(q.optionspt[oi]));
+  btn.appendChild(pt);
+  if(!done){ btn.onclick = makeAnswerHandler(gi, oi); }
+  return btn;
+}
+
+function makeAnswerHandler(gi, oi){
+  return function(){
+    if(answered[gi] !== undefined){ return; }
+    answered[gi] = oi;
+    var q = QUESTIONS[gi];
+    var correct = (oi === q.answer);
+    if(correct){ score++; }
+
+    var card = this.parentNode.parentNode;
+    card.className = "q-card " + (correct ? "correct-card" : "wrong-card");
+
+    var opts = this.parentNode.getElementsByTagName("button");
+    for(var i=0; i<opts.length; i++){
+      opts[i].disabled = true;
+      var cls = "opt-btn";
+      if(i === q.answer){ cls += " opt-correct"; }
+      else if(i === oi){ cls += " opt-wrong"; }
+      else { cls += " opt-dim"; }
+      opts[i].className = cls;
+    }
+
+    var fb = $("fb-" + gi);
+    fb.innerHTML = "";
+    var verdict = document.createElement("div");
+    verdict.className = "fb-verdict " + (correct ? "fb-correct" : "fb-wrong");
+    verdict.appendChild(document.createTextNode(correct ? "Correct | Correto" : "Incorrect | Incorreto"));
+    fb.appendChild(verdict);
+    var expl = document.createElement("div");
+    expl.appendChild(document.createTextNode(q.explanation));
+    fb.appendChild(expl);
+    var explpt = document.createElement("div");
+    explpt.className = "fb-pt";
+    explpt.appendChild(document.createTextNode(q.explanationpt));
+    fb.appendChild(explpt);
+    var ref = document.createElement("div");
+    ref.className = "fb-ref";
+    ref.appendChild(document.createTextNode(q.ref));
+    fb.appendChild(ref);
+    fb.className = "feedback show";
+
+    updateBar();
+    checkFinish();
+  };
+}
+
+function updateBar(){
+  var cards = document.querySelectorAll(".q-card");
+  var total = 0;
+  var done = 0;
+  for(var i=0; i<cards.length; i++){
+    if(cards[i].style.display === "none"){ continue; }
+    total++;
+    var fb = cards[i].getElementsByTagName("div");
+    for(var j=0; j<fb.length; j++){
+      if(fb[j].id && fb[j].id.indexOf("fb-") === 0){
+        var idx = parseInt(fb[j].id.replace("fb-",""), 10);
+        if(answered[idx] !== undefined){ done++; }
+        break;
+      }
+    }
+  }
+  $("progress-label").innerHTML = done + " / " + total + " answered | respondidas";
+  $("progress-fill").style.width = (total > 0 ? Math.round(done/total*100) : 0) + "%";
+  $("score-display").innerHTML = "Score: " + score;
+}
+
+function checkFinish(){
+  var done = 0;
+  for(var k in answered){ done++; }
+  $("finish-bar").style.display = (done === QUESTIONS.length) ? "block" : "none";
+}
+
+function showResults(){
+  hide("quiz-screen");
+  show("results-screen");
+  var total = QUESTIONS.length;
+  var done = 0;
+  for(var k in answered){ done++; }
+  var pct = Math.round(score/total*100);
+  var passed = pct >= 70;
+  var circle = $("result-circle");
+  circle.innerHTML = pct + "%";
+  circle.style.background = passed ? "#1a5c2a" : "#8b1a1a";
+  $("result-title").innerHTML = passed ? "Well Done! | Bem feito!" : "Keep Practising | Continue a Treinar";
+  $("result-title-pt").innerHTML = passed ? "Passou com " + pct + "%" : "Nao passou - " + pct + "%";
+  $("result-msg").innerHTML = passed
+    ? "You passed the VSGMC R&A Rules knowledge check with " + pct + "%."
+    : "You scored " + pct + "%. A score of 70% or more is required to pass.";
+  $("result-msg-pt").innerHTML = passed
+    ? "Passou a verificacao de conhecimentos das Regras R&A VSGMC com " + pct + "%."
+    : "Obteve " + pct + "%. E necessario 70% ou mais para passar.";
+  $("r-correct").innerHTML = score;
+  $("r-wrong").innerHTML = (done - score);
+  $("r-skip").innerHTML = (total - done);
+  $("r-pct").innerHTML = pct + "%";
+}
+
+function restartQuiz(){
+  answered = {};
+  score = 0;
+  currentCat = "all";
+  hide("results-screen");
+  show("quiz-screen");
+  $("finish-bar").style.display = "none";
+  buildCatBar();
+  buildCards();
+  updateBar();
+  window.scrollTo(0, 0);
+}
+
+function reviewAnswers(){
+  hide("results-screen");
+  show("quiz-screen");
+  window.scrollTo(0, 0);
+}
+
+$("start-btn").onclick = startQuiz;
+$("results-btn").onclick = showResults;
+$("restart-btn").onclick = restartQuiz;
+$("review-btn").onclick = reviewAnswers;
+</script>
+</body>
+</html>
